@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width ,initial-scale=1">
+
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.4.0-rc.1/echarts.min.js"></script>
+</head>
+<body>
+
+<h1>请查看天气</h1>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 600px;height:400px;"></div>
+
+<script type="text/javascript">
+    var ws = new WebSocket('ws://127.0.0.1:5000/weather')
+//    ws.onmessage = function (event) {
+//    }
+    window.setInterval('get_data()', 5000);
+    var data1 = [];
+
+    function get_data() {
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // 指定图表的配置项和数据
+
+        option = {
+            title: {
+                text: '折线图堆叠'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['温度', '湿度']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+//                {
+//                    name: '温度',
+//                    type: 'line',
+//                    stack: '总量',
+//                    data: data1.wendu
+//
+//                },
+                {
+                    name: '湿度',
+                    type: 'line',
+                    stack: '总量',
+                    data: data1.shidu
+
+
+                },
+
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+
+
+        $(function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/weather',
+                type: 'post',
+
+                success: function (res) {
+                    data = JSON.parse(res)
+                    data1 = data
+                    myChart.setOption(option);
+                    console.log('dataq', data1)
+                }
+            })
+        })
+
+    }
+
+</script>
+</body>
+</html>
